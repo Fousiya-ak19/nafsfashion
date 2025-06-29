@@ -1,12 +1,13 @@
 const express=require("express");
 const router=express.Router();
-const userControllerr=require("../controllers/user/userController")
+const userController=require("../controllers/user/userController")
 
 
-router.get("/pageNotFound",userControllerr.pageNotFound);
-router.get("/",userControllerr.loadHomepage);
-
-
+router.get("/pageNotFound",userController.pageNotFound);
+router.get("/",userController.loadHomepage);
+router.get("/signup",userController.loadSignup);
+router.get("/shop",userController.loadShopping);
+router.post("/signup",userController.signup);
 
 
 module.exports=router;
