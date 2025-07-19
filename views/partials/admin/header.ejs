@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+    font-src 'self' https://fonts.gstatic.com;
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+  ">
+  <title>Admin Dashboard</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-pF3fM9NMD4B5Ck6Tr4EFKDZT94c9Iq03XZfyb2VZhxLx9fnZzF0oVZ2/fbM3UZoeyDkBk2QUY+UpF4dQxHYboQ==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .admin-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #b8d8d8;
+      height: 100vh;
+      padding-top: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+      font-size: 22px;
+      margin: 0 0 30px 20px;
+      color: #000;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 5px;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #000;
+      font-size: 16px;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 5px;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      min-width: 20px;
+    }
+
+    .sidebar ul li a:hover {
+      background-color: #8abfbf;
+      color: white;
+    }
+
+    .sidebar ul li a.active {
+      background-color: #6ea6a6;
+      color: white;
+      font-weight: bold;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      background: #f9f9f9;
+      padding: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      background: #b8d8d8;
+      padding: 10px 20px;
+      position: relative;
+    }
+
+    .profile-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile-img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      display: none;
+      min-width: 150px;
+      z-index: 100;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dropdown a:hover {
+      background-color: #f5f5f5;
+    }
+
+    .content {
+      padding: 30px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <h2>Nafs Fashion<span style="color:red">.</span></h2>
+      <ul>
+        <li><a href="/admin/dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+        <li><a href="/admin/category"><i class="fas fa-th-list"></i> Category</a></li>
+        <li><a href="/admin/brands"><i class="fas fa-tags"></i> Brands</a></li>
+        <li><a href="/admin/add-product"><i class="fas fa-plus-square"></i> Add Product</a></li>
+        <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="/admin/coupon"><i class="fas fa-ticket-alt"></i> Coupon</a></li>
+        <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
+        <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="profile-icon" onclick="toggleDropdown()">
+          <img src="/img/admin-profile.png" alt="Admin" class="profile-img">
+          <div id="dropdown" class="dropdown">
+            <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <h1>Dashboard</h1>
+        <p>Welcome back, Admin!</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById('dropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Optional: Hide dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+      const profileIcon = document.querySelector('.profile-icon');
+      const dropdown = document.getElementById('dropdown');
+      if (!profileIcon.contains(event.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -130,13 +130,16 @@
           <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm Password"  />
         <div id="error5" class="error-message"></div>
         </div>
-
+         <%if(locals.message&&message.length>0){%>
+          <div class="alert alert.danger text_center">
+            <%message%></div>
+          <%}%>
         <button type="submit" id="signupButton" name="signupButton" class="signup-button">Sign Up</button>
 
-        <button type="button" id="googleSignup" name="googleSignup" class="google-button">
+        <a href="/auth/google" id="googleSignup" name="googleSignup" class="google-button">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Icon" />
           <span>Sign up via Google</span>
-        </button>
+        </a>
 
         <div class="login-link">
           Already have an account? <a href="/login">Login here</a>

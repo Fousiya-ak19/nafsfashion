@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Nafs Fashion</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #f1f1f1;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: bold;
+      color: #f5b301;
+      margin-bottom: 10px;
+    }
+
+    .form-section h2 {
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .login-button {
+      padding: 12px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .google-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .google-button img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .signup-link {
+      margin-top: 20px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .signup-link a {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .image-section {
+      flex: 1;
+      background: url('/img/loginimage.png') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+
+    .image-text {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      font-size: 30px;
+      color: white;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .image-section {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <div class="logo">Nafs</div>
+      <h2>Welcome to Nafs</h2>
+      <form id="loginForm" action="/login" method="POST">
+        <div class="form-group">
+          <input type="email" id="email" name="email" placeholder="Email" required />
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" name="password" placeholder="Password" required />
+        </div>
+        <%if(locals.message&&message.length>0){%>
+          <div class="alert alert.danger text_center">
+            <%message%></div>
+          <%}%>
+        <button type="submit" id="loginButton" name="loginButton" class="login-button">Login</button>
+
+        <a href="/auth/google" class="google-button">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Icon" />
+          <span>Login with Google</span>
+        </a>
+
+        <div class="signup-link">
+          Not registered? <a href="/signup">Sign up here</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="image-section">
+      <div class="image-text">Happy Shopping 🛍️</div>
+    </div>
+  </div>
+</body>
+</html>

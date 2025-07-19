@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OTP Verification</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #fff8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .logo {
+      margin-bottom: 20px;
+    }
+    .verify-box {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    .verify-box h2 {
+      margin-bottom: 20px;
+      color: #b36b2f;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+    }
+    button {
+      background-color: #b36b2f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button:hover {
+      background-color: #9a5522;
+    }
+    .timer {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #b36b2f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto;
+      font-size: 18px;
+      font-weight: bold;
+      color: #b36b2f;
+    }
+    .resend {
+      color: #555;
+      background: transparent;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .resend.disabled {
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+    .login-link a {
+      color: #b36b2f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+ 
+ <!-- Logo -->
+  <div class="logo">
+    <img src="img/nafslogo.png" alt="Nafs Logo" width="100">
+  </div>
+
+  <!-- Verification Box -->
+  <div class="verify-box">
+    <h2>Verify OTP</h2>
+   <form id="otpForm" method="POST" action="/verify-otp" onsubmit="return validateOTPForm()">
+    <input type="text" name="otp" id="otp" class="form-control" pattern="\d*" placeholder="Enter OTP" maxlength="6" required />
+    <button type="submit">Verify Email</button>
+  </form>
+
+    <!-- Circular Countdown Timer -->
+    <div class="timer" id="countdown">60</div>
+    
+    <!-- Resend Button -->
+    <button type="button" class="resend disabled" id="resendBtn" disabled 
+    onclick="resendOTP()"
+    >Resend OTP</button>
+   
+    
+    <!-- Already verified -->
+    <div class="login-link">
+      Already verified? <a href="#">Login now</a>
+    </div>
+  </div>
+
+ 
+    <script>
+  let timeLeft = 60;
+  let timerInterval; // ✅ Declare it globally
+
+  const timerDisplay = document.getElementById("countdown");
+  const resendBtn = document.getElementById("resendBtn");
+
+  function startTimer() {
+    clearInterval(timerInterval);
+
+    timeLeft = 60;
+    timerDisplay.textContent = timeLeft;
+    resendBtn.disabled = true;
+    resendBtn.classList.add("disabled");
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = timeLeft;
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = "0";
+        resendBtn.disabled = false;
+        resendBtn.classList.remove("disabled");
+        console.log("✅ Resend button is now enabled");
+
+      }
+    }, 1000);
+  }
+
+  startTimer(); // Start timer on load
+
+  function validateOTPForm() {
+    const otpInput = document.getElementById("otp").value;
+
+    $.ajax({
+      type: "POST",
+      url: "/verify-otp",
+      data: { otp: otpInput },
+      success: function (response) {
+        if (response.success) {
+          Swal.fire({
+            icon: "success",
+            title: "OTP Verified Successfully",
+            showConfirmButton: false,
+            timer: 1500
+          }).then(() => {
+            window.location.href = response.redirectUrl;
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.message
+          });
+        }
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid OTP",
+          text: "Please try again"
+        });
+      }
+    });
+
+    return false; // Prevent default form submission
+  }
+
+  function resendOTP() {
+      console.log("Resend OTP clicked");
+    //clearInterval(timerInterval);
+    //startTimer();
+
+    $.ajax({
+      type: "POST",
+      url: "/resend-otp",
+      success: function (response) {
+        if (response.success) {
+          Swal.fire({
+            icon: "success",
+            title: "OTP Resent Successfully",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          startTimer();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.message ||"Failed to resend OTP"
+          });
+        }
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Server not responding. Please try again later."
+        });
+      }
+    });
+
+    return false;
+  }
+
+
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- ✅ SweetAlert2 JS link -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+</body>
+</html>
