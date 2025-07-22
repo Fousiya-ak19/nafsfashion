@@ -197,7 +197,11 @@ const login= async (req,res)=>{
             return res.render("login",{messaage:"Incorrect Password"});
 
         }
-        req.session.user=findUser._id;
+        req.session.user = {
+        _id: findUser._id,
+        name: findUser.name,
+        email: findUser.email,
+        };
         res.redirect("/");
     } catch (error) {
         console.error("login error",error);
