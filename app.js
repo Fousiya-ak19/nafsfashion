@@ -1,4 +1,5 @@
 const express=require("express");
+const helmet=require('helmet');
 const app=express();
 const path=require("path");
 require("dotenv").config();
@@ -46,6 +47,23 @@ app.use(express.static(path.join(__dirname,"public")));
 
 app.use("/",userRouter);
 app.use('/admin',adminRouter);
+
+
+
+
+// Add Content Security Policy using Helmet
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+      connectSrc: ["'self'"],
+      imgSrc: ["'self'", "data:"],
+    },
+  })
+);
 const PORT=process.env.PORT||3000
 console.log("port from env:",PORT);
 console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);

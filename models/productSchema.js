@@ -55,5 +55,5 @@ const productSchema=new Schema({
     },
 },{timestamps:true});
 
-const Product=mongoose.modelodel("Product",productSchema);
+const Product=mongoose.model("Product",productSchema);
 module.exports=Product;

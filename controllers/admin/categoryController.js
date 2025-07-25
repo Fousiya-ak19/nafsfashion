@@ -1,6 +1,5 @@
 const Category=require("../../models/categorySchema");
-
-
+const Product=require("../../models/productSchema");
 
 
 
@@ -47,8 +46,107 @@ const addCategory=async (req,res)=>{
     } catch (error) {
         return res.status(500).json({error:"Internal Server Error"})
     }
+};
+
+
+const addCategoryOffer=async (req,res)=>{
+    try {
+        const percentage=parseInt(req.body.percentage);
+        const categoryId=req.body.categoryId;
+        const category =await Category.findById(categoryId);
+        if(!category)
+        {
+            return res.status(404).json({status:false, message:"Category not found"});
+        }
+        const products=await Product.find({category:category._id});
+        const hasProductOffer=products.some((product)=>product.productOffer > percentage);
+        if(hasProductOffer){
+            return res.json({status:false , message:"Products with this category already have product offer"})
+        }
+        await category.updateOne({_id:categoryId},{$set :{categoryOffer:percentage}});
+
+
+        const updatedCategory = await Category.findById(categoryId);
+        console.log("Saved offer percentage:", updatedCategory.categoryOffer);
+
+
+
+
+        for(const product of products){
+            product.productOffer=0;
+            product.salePrice=product.regularPrice;
+            await product.save();
+        }
+        res.json({status:true});
+    
+    } catch (error) {
+        res.status(500).json({status:false, message:"Internal Server Error"})
+        
+    }
+};
+
+const removeCategoryOffer=async (req,res)=>{
+    try{
+        const categoryId=req.body.categoryId;
+        const category=await Category.findById(categoryId);
+        if(!category){
+            return res.status(404).json({status:false,message :"Category not found"})
+        }
+        const percentage=category.categoryOffer;
+        const products = await Product.find({category:category._id});
+
+        if(products.length > 0){
+            for(const product of products){
+                product.salePrice = Math.floor(product.regularPrice * (1 - (percentage / 100)));
+                product.productOffer=0;
+                await product.save();
+            }
+        }
+        category.categoryOffer=0;
+        await category.save();
+        res.json({status:true});
+    }
+    catch(error){
+    res.status(500)
+.json({status:false,message:"Internal Server Error"})}
 }
+
+const getListCategory=async(req,res)=>{
+   try {
+    let id=req.query.id;
+    await Category.updateOne({_id:id},{$set:{isListed:false}});
+    res.redirect("/admin/category");
+   } catch (error) {
+    res.redirect("/pageerror");
+   }
+ }
+
+const getUnlistCategory=async(req,res)=>{
+    try {
+        let id=req.query.id;
+        await Category.updateOne({_id:id},{$set:{isListed:true}});
+        res.redirect("/admin/category");
+    }
+ catch (error) {
+        res.redirect("/pageerror");
+    }
+}
+const getEditCategory=async (req,res)=>{
+    try {
+        const id=req.query.id;
+        const category=await Category.findOne({_id:id});
+        res.render("edit-category",{category:category});
+    } catch (error) {
+        res.redirect("/pageerror");
+    }
+};
+
 module.exports={
     categoryInfo,
     addCategory,
+    addCategoryOffer,
+    removeCategoryOffer,
+    getListCategory,
+    getUnlistCategory,
+    getEditCategory,
 }
